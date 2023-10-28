@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  lambda-functions
+
+Globals:
+  Function:
+    Timeout: 360
+
+Resources:
+  ImportLanguageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../../dist/packages/lambda-functions
+      Handler: main.lambdaHandler
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      Timeout: 5000
+      MemorySize: 500
+      Environment:
+        Variables:
+          DATABASE_URL:
+
+Outputs:
+  ImportLanguageFunction:
+    Description: 'Import Language Lambda Function ARN'
+    Value: !GetAtt ImportLanguageFunction.Arn
+  ImportLanguageFunctionIamRole:
+    Description: 'Implicit IAM Role created for Import Language function'
+    Value: !GetAtt ImportLanguageFunctionRole.Arn

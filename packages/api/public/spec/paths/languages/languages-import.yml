@@ -1,0 +1,45 @@
+get:
+  tags:
+    - Languages
+  summary: Get the status of the import job for a language.
+  parameters:
+    - $ref: '../../schemas/parameters.yml#languageCode'
+  responses:
+    200:
+      description: Ok
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              startDate:
+                type: string
+                format: date
+                description: The date the job started.
+              endDate:
+                type: string
+                format: date
+                description: The date the job completed.
+              succeeded:
+                type: boolean
+                description: Whether the job was successful.
+post:
+  tags:
+    - Languages
+  summary: Import glossing data from hebrewgreekbible.online. WARNING - this process can take some time. It can take around a minute to import all the glosses.
+  parameters:
+    - $ref: '../../schemas/parameters.yml#languageCode'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            import:
+              type: string
+              example: Spanish
+              description: The language name (in English) on hebrewgreekbible.online.
+  responses:
+    204:
+      description: No Content

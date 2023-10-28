@@ -1,0 +1,24 @@
+{
+  "rewrites": [
+    {
+      "source": "/([^.]+)",
+      "has": [
+        {
+          "type": "host",
+          "value": "interlinear.globalbibletools.com"
+        }
+      ],
+      "destination": "/"
+    },
+    {
+      "source": "/([^.]+)",
+      "has": [
+        {
+          "type": "host",
+          "value": "interlinear-git-(?<branch>.*)-global-bible-tools.vercel.app"
+        }
+      ],
+      "destination": "/"
+    }
+  ]
+}

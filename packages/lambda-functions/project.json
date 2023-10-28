@@ -1,0 +1,47 @@
+{
+  "name": "lambda-functions",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/lambda-functions",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "compiler": "babel",
+        "target": "node",
+        "externalDependencies": "none",
+        "outputPath": "dist/packages/lambda-functions",
+        "main": "packages/lambda-functions/functions/import-language/index.ts",
+        "tsConfig": "packages/lambda-functions/tsconfig.json",
+        "assets": [
+          {
+            "input": "packages/db/src/",
+            "glob": "schema.prisma",
+            "output": "/"
+          },
+          {
+            "input": "node_modules/.prisma/client",
+            "glob": "libquery_engine-rhel-openssl-*.so.node",
+            "output": "/"
+          }
+        ]
+      }
+    },
+    "serve": {
+      "command": "sam local invoke --env-vars env.json --event event.json",
+      "options": {
+        "cwd": "packages/lambda-functions"
+      },
+      "dependsOn": ["build"]
+    },
+    "deploy": {
+      "command": "sam deploy --guided",
+      "options": {
+        "cwd": "packages/lambda-functions"
+      },
+      "dependsOn": ["build"]
+    }
+  },
+  "tags": []
+}

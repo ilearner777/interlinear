@@ -1,0 +1,40 @@
+languageCode:
+  name: code
+  in: path
+  description: IETF code of the language
+  required: true
+  schema:
+    type: string
+  example: es
+verseId:
+  name: verseId
+  in: path
+  description: The verse number within the chapter. In the format of `BBCCCVVV`. (**B**ook, **C**hapter, **V**erse)
+  required: true
+  schema:
+    type: string
+  example: '02014001'
+wordId:
+  name: wordId
+  in: path
+  description: The word ID within the chapter. In the format of `BBCCCVVVWW`. (**B**ook, **C**hapter, **V**erse, **W**ord).
+  required: true
+  schema:
+    type: string
+  example: '0201400101'
+userId:
+  name: userId
+  in: path
+  description: The UUID of a user in the system.
+  required: true
+  schema:
+    type: string
+  example: '123e4567-e89b-12d3-a456-426614174000'
+lemmaId:
+  name: lemmaId
+  in: path
+  description: The id of the lemma as a strong's number.
+  required: true
+  schema:
+    type: string
+  example: G314

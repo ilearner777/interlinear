@@ -1,0 +1,46 @@
+openapi: 3.0.3
+info:
+  title: Gloss Translation API
+  description: |-
+    This is the Gloss Translation API.
+    The frontend can be accessed at [https://gloss-translation.vercel.app]().
+  version: 0.0.1
+servers:
+  - url: /api
+paths:
+  /auth/login:
+    $ref: ./paths/users/auth.yml#login
+  /auth/logout:
+    $ref: ./paths/users/auth.yml#logout
+  /auth/session:
+    $ref: ./paths/users/auth.yml#session
+  /auth/invite:
+    $ref: ./paths/users/auth.yml#invite
+  /users:
+    $ref: ./paths/users/users.yml
+  /users/{userId}:
+    $ref: ./paths/users/user.yml
+  /email/verify:
+    $ref: ./paths/users/verify-email.yml
+  /verses/{verseId}:
+    $ref: ./paths/translation/verse.yml
+  /import/languages:
+    $ref: ./paths/languages/import-languages.yml
+  /languages:
+    $ref: ./paths/languages/languages.yml
+  /languages/{code}:
+    $ref: ./paths/languages/language.yml
+  /languages/{code}/import:
+    $ref: ./paths/languages/languages-import.yml
+  /languages/{code}/verses/{verseId}/translation:
+    $ref: ./paths/translation/translations.yml
+  /languages/{code}/verses/{verseId}/glosses:
+    $ref: ./paths/translation/verse-glosses.yml
+  /languages/{code}/words/{wordId}:
+    $ref: ./paths/languages/language-words.yml
+  /languages/{code}/members:
+    $ref: ./paths/languages/language-members.yml
+  /languages/{code}/members/{userId}:
+    $ref: ./paths/languages/language-member.yml
+  /lemmas/{lemmaId}/resources:
+    $ref: ./paths/resources/lemma-resources.yml

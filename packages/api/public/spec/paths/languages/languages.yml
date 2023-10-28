@@ -1,0 +1,50 @@
+get:
+  tags:
+    - Languages
+  summary: Get all languages being translated.
+  responses:
+    '200':
+      description: Ok
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                allOf:
+                  - type: array
+                    items:
+                      $ref: '../../schemas/language.yml'
+                  - example:
+                      - code: es
+                        name: Español
+                        font: Noto Serif
+                        textDirection: ltr
+                        bibleTranslationIds:
+                          - spa_bes
+                          - spa_vbl
+                      - code: en
+                        name: English
+                        font: Noto Sans
+                        textDirection: ltr
+                        bibleTranslationIds:
+                          - eng_abt
+                          - eng_bsb
+post:
+  tags:
+    - Languages
+  summary: Create a new language to translate.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../../schemas/create-language.yml'
+  responses:
+    201:
+      description: Created
+      headers:
+        Location:
+          schema:
+            type: string
+          description: URL to new language.
