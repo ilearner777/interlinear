@@ -42,14 +42,21 @@ Vagrant.configure("2") do |config|
     vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate//home/vagrant/vmrepo", "1"]
   end
 
+  # Echo current start time stamp
+  config.vm.provision "shell", name: "starttimestamp", inline: <<-SHELL
+    echo " "  
+    echo "Provisioning started at: $(date +%Y-%m-%d_%H:%M:%S)"
+    echo " "
+  SHELL
+
   # Install Node.js 18
   config.vm.provision "shell", name: "nodejs", inline: <<-SHELL
+    echo " " 
+    echo "Installing Node.js 18..."
     echo "Provisioning with root access"
 
     # Update resynchronizes the package index files from their sources. 
     sudo apt update
-
-    echo "Installing Node.js 18..."
 
     # 1. Download and import the Nodesource GPG key
     sudo apt install -y ca-certificates curl gnupg
@@ -68,6 +75,7 @@ Vagrant.configure("2") do |config|
 
   # Install Postgres 14
   config.vm.provision "shell", name: "postgres", inline: <<-SHELL
+    echo " " 
     echo "Starting Postgres 14..."
     echo "Provisioning with root access"
 
@@ -102,6 +110,7 @@ Vagrant.configure("2") do |config|
 
   # Update .profile to cd into /home/vagrant/vmrepo
   config.vm.provision "shell", name: "profile", privileged: false, inline: <<-SHELL
+    echo " " 
     echo "Setting up profile for /home/vagrant/vmrepo"
     echo "Provisioning with user access"
     if !(grep -q "cd /home/vagrant/vmrepo" /home/vagrant/.profile) then
@@ -113,6 +122,7 @@ Vagrant.configure("2") do |config|
 
   # Create .env.local files
   config.vm.provision "shell", name: "env", privileged: false, inline: <<-SHELL
+    echo " " 
     echo "Setting up .env.local files"
     echo "Provisioning with user access"
     echo "Performing database project setup..."
@@ -126,6 +136,7 @@ Vagrant.configure("2") do |config|
 
   # Resolve File Watcher Limit Issue
   config.vm.provision "shell", name: "issue", inline: <<-SHELL
+    echo " " 
     echo "Resolving File Watcher Limit Issue..."
     echo "Provisioning with root access"
     # Define the line to check for
@@ -144,6 +155,7 @@ Vagrant.configure("2") do |config|
    
   # Install npm packages
   config.vm.provision "shell", name: "npm", privileged: false, inline: <<-SHELL
+    echo " " 
     echo "Setting up npm"
     echo "Provisioning with user access"
     echo "cd /home/vagrant/vmrepo"
@@ -151,6 +163,19 @@ Vagrant.configure("2") do |config|
 
     echo "Setting nx as global..."
     sudo npm i -g nx
+
+    echo "Setting up mount for .node_modules in order to"
+    echo " prevent it from being replicated to host when running npm install."
+    # Create directories
+    mkdir -p /home/vagrant/node_modules
+    mkdir -p /home/vagrant/vmrepo/.node_modules
+
+    # Add mount to /etc/fstab
+    echo "/home/vagrant/node_modules /home/vagrant/vmrepo/.node_modules none bind" | sudo tee -a /etc/fstab
+
+    # Mount now
+    sudo mount --bind /home/vagrant/node_modules /home/vagrant/vmrepo/.node_modules
+
 
     echo "Performing npm install..."
     npm install
@@ -161,6 +186,7 @@ Vagrant.configure("2") do |config|
 
   # Run db migrations with Nx Prisma and restore database from seed dump
   config.vm.provision "shell", name: "dbsetup", privileged: false, inline: <<-SHELL
+    echo " " 
     echo "Setting up database"
     echo "Provisioning with user access"
     echo "cd /home/vagrant/vmrepo"
@@ -178,6 +204,7 @@ Vagrant.configure("2") do |config|
 
   # Configure database for host access
   config.vm.provision "shell", name: "dbconfig", inline: <<-SHELL
+    echo " " 
     echo "Configuring database for host access"
     echo "Provisioning with root access"
 
@@ -225,4 +252,12 @@ Vagrant.configure("2") do |config|
 
     echo "End of database configuration"
   SHELL
-end
+
+    # Echo current end time stamp
+    config.vm.provision "shell", name: "endtimestamp", inline: <<-SHELL 
+      echo " "
+      echo "Provisioning ended at: $(date +%Y-%m-%d_%H:%M:%S)"
+      echo " "
+    SHELL
+    
+  end
