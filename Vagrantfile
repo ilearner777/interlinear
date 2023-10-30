@@ -47,12 +47,12 @@ Vagrant.configure("2") do |config|
     echo "Provisioning with root access"
 
     # Update resynchronizes the package index files from their sources. 
-    sudo apt-get update
+    sudo apt update
 
     echo "Installing Node.js 18..."
 
     # 1. Download and import the Nodesource GPG key
-    sudo apt-get install -y ca-certificates curl gnupg
+    sudo apt install -y ca-certificates curl gnupg
     sudo mkdir -p /etc/apt/keyrings
     curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
 
@@ -61,8 +61,8 @@ Vagrant.configure("2") do |config|
     echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
 
     # 3. Run Update and Install
-    sudo apt-get update
-    sudo apt-get install nodejs -y
+    sudo apt update
+    sudo apt install nodejs -y
     echo "End of: Installing Node.js 18"
   SHELL
 
@@ -80,11 +80,11 @@ Vagrant.configure("2") do |config|
     wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 
     # 3. Update the package lists
-    sudo apt-get update
+    sudo apt update
 
     # 4. Install the latest version of PostgreSQL.
     # If you want a specific version, use 'postgresql-14' or similar instead of 'postgresql':
-    sudo apt-get -y install postgresql-14
+    sudo apt -y install postgresql-14
 
     # 5. Create a PostgreSQL user with CREATEDB and CREATEROLE privileges
     echo "sudo -u postgres psql -c \"CREATE USER vagrant WITH PASSWORD 'vagrant' CREATEDB CREATEROLE;\""
