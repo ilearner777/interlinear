@@ -77,8 +77,6 @@ This was tested using:
    vagrant -help
    ```
 
-1. Once your VM environment is created, as an alternative to the vagrant commands listed above, you can use the `Oracle VM VirtualBox` application to manage the starting, stopping, and configuration of your VM. The `Help` menu provides detailed instructions on its use.
-
 ## Post-Installation Notes
 
 Accessing VM resources from Host.
