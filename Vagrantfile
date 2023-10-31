@@ -164,24 +164,10 @@ Vagrant.configure("2") do |config|
     echo "Setting nx as global..."
     sudo npm i -g nx
 
-    echo "Setting up mount for .node_modules in order to"
-    echo " prevent it from being replicated to host when running npm install."
-    # Create directories
-    mkdir -p /home/vagrant/node_modules
-    mkdir -p /home/vagrant/vmrepo/.node_modules
-
-    # Add mount to /etc/fstab
-    echo "/home/vagrant/node_modules /home/vagrant/vmrepo/.node_modules none bind" | sudo tee -a /etc/fstab
-
-    # Mount now
-    sudo mount --bind /home/vagrant/node_modules /home/vagrant/vmrepo/.node_modules
-
-
     echo "Performing npm install..."
     npm install
-    echo "npm provisioning completed."
 
-    echo "End of npm"
+    echo "npm provisioning completed."
   SHELL
 
   # Run db migrations with Nx Prisma and restore database from seed dump
