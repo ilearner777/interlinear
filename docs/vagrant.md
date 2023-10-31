@@ -49,32 +49,10 @@ This was tested using:
    vagrant ssh
    ```
 
-1. Here is a list of useful Vagrant commands. Be sure that you are in the same directory as the Vagran­tfile when running these commands!
-
-   | Command                                       | Description                                                                                                                          |
-   | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-   | `vagrant up`                                  | starts vagrant enviro­nment (also provisions only on the FIRST vagrant up) Equivalent to pressing the power buttons on your servers. |
-   | `vagrant status`                              | outputs status of the vagrant machine                                                                                                |
-   | `vagrant halt`                                | stops the vagrant machine. Similar to shutdown.                                                                                      |
-   | `vagrant reload`                              | restarts vagrant machine, loads new Vagran­tfile configuration                                                                       |
-   | `vagrant provision`                           | forces reprovisioning of the vagrant machine                                                                                         |
-   | `vagrant ssh`                                 | connects to machine via SSH                                                                                                          |
-   | `vagrant destroy`                             | stops and deletes all traces of the vagrant machine                                                                                  |
-   | `vagrant suspend`                             | Suspends a virtual machine (remembers state). Starts faster.                                                                         |
-   | `vagrant resume`                              | Resume a suspended machine (vagrant up works just fine for this as well)                                                             |
-   | `vagrant reload` --provision                  | Restart the virtual machine and force provis­ioning                                                                                  |
-   | `vagrant provision` --debug                   | Use the debug flag to increase the verbosity of the output                                                                           |
-   | `vagrant box list`                            | List the installed boxes                                                                                                             |
-   | `vagrant box remove` [virtualbox name]        | delete a box                                                                                                                         |
-   | `vagrant global­-status`                      | outputs status of all vagrant machines                                                                                               |
-   | `vagrant global­-status` --prune              | same as above, but prunes invalid entries                                                                                            |
-   | `vagrant up` --provision \| tee provision.log | Runs vagrant up, forces provisioning and logs all output to a file                                                                   |
-   | `VAGRANT_LOG=info`                            | Use the environement variable VAGRANT_LOG to set verbosity. Enter this in terminal session before you run the `vagrant up` command   |
-
 1. For help on vagrant commands, at a terminal session enter:
 
    ```bash
-   vagrant -help
+   vagrant --help
    ```
 
 ## Post-Installation Notes
