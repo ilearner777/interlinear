@@ -11,10 +11,6 @@ Vagrant.configure("2") do |config|
   # For a complete reference of configuration options, please see the online documentation at
   # https://docs.vagrantup.com.
 
-  # Every Vagrant development environment requires a box. You can search for
-  # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "generic/ubuntu2210"
-
   # Configure for application API
   config.vm.network "forwarded_port", guest: 4300, host: 4300, host_ip: "127.0.0.1"
 
@@ -23,9 +19,6 @@ Vagrant.configure("2") do |config|
 
   # Configure for database
   config.vm.network "forwarded_port", guest: 5432, host: 5432, host_ip: "127.0.0.1"
-
-  # Mount repo project root folder. 
-  config.vm.synced_folder ".", "/home/vagrant/vmrepo", type: "virtualbox"
 
   # Disable the default share of the current code directory. Doing this
   # provides improved isolation between the vagrant box and your host
@@ -37,12 +30,26 @@ Vagrant.configure("2") do |config|
   # Use VBoxManage to customize the VM.
   # Enable creation of symbolic links on dir /home/vagrant/vmrepo
   config.vm.provider "virtualbox" do |vb|
+    # Every Vagrant development environment requires a box. You can search for
+    # boxes at https://vagrantcloud.com/search.
+    config.vm.box = "generic/ubuntu2210"
+
     vb.memory = 4096  # Set RAM in MB (4GB in this example)
     vb.cpus = 2      # Set the number of CPU cores
     vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate//home/vagrant/vmrepo", "1"]
+
+    # Mount repo project root folder. 
+    config.vm.synced_folder ".", "/home/vagrant/vmrepo"
+    #, type: "virtualbox"
   end
 
-  # Echo current start time stamp
+  # Use Docker provider for the VM (https://www.vagrantup.com/docs/docker/basics)
+  config.vm.provider "docker" do |v,override|
+    override.vm.box="tknerr/baseimage-ubuntu-22.04"
+    config.vm.box_version = "1.0.0"
+  end
+
+# Echo current start time stamp
   config.vm.provision "shell", name: "starttimestamp", inline: <<-SHELL
     echo " "  
     echo "Provisioning started at: $(date +%Y-%m-%d_%H:%M:%S)"
@@ -71,6 +78,13 @@ Vagrant.configure("2") do |config|
     sudo apt update
     sudo apt install nodejs -y
     echo "End of: Installing Node.js 18"
+  SHELL
+
+  # This required for Postgres 14 installation
+  config.vm.provision "shell", name: "timezone", inline: <<-SHELL
+    export DEBIAN_FRONTEND=noninteractive
+    export TZ="America/New_York"  # Set your desired timezone here
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
   SHELL
 
   # Install Postgres 14
