@@ -56,6 +56,21 @@ Vagrant.configure("2") do |config|
     echo " "
   SHELL
 
+  # Install Ubuntu packages missing in docker image
+  config.vm.provision "shell", name: "docker", inline: <<-SHELL
+    echo " "
+    echo "Installing Ubuntu packages missing in docker image..."  
+    echo "Provisioning with root access"  
+    sudo apt update
+    echo "installing vim"
+    sudo apt install vim
+    # Install iproute2 to get the default gateway IP address
+    echo "Installing iproute2"
+    sudo apt install iproute2
+
+    echo "End of: Installing Ubuntu packages missing in docker image"
+  SHELL
+  
   # Install Node.js 18
   config.vm.provision "shell", name: "nodejs", inline: <<-SHELL
     echo " " 
@@ -107,6 +122,11 @@ Vagrant.configure("2") do |config|
     # 4. Install the latest version of PostgreSQL.
     # If you want a specific version, use 'postgresql-14' or similar instead of 'postgresql':
     sudo apt -y install postgresql-14
+
+    # Allow postgres user to access /home/vagrant
+    # This prevents error: "could not change directory to "/home/vagrant": Permission denied"
+    echo "sudo chmod a+rx /home/vagrant"
+    sudo chmod a+rx /home/vagrant
 
     # 5. Create a PostgreSQL user with CREATEDB and CREATEROLE privileges
     echo "sudo -u postgres psql -c \"CREATE USER vagrant WITH PASSWORD 'vagrant' CREATEDB CREATEROLE;\""
@@ -228,6 +248,7 @@ Vagrant.configure("2") do |config|
         echo "String: $replace_str has been appended to postgresql.conf"
       fi
     fi
+
     echo "Adding host lines to pg_hba.conf"
     # Get the default gateway IP address
     gateway_IP=$(ip route | awk '/default/ { print $3 }')
