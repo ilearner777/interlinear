@@ -11,6 +11,10 @@ Vagrant.configure("2") do |config|
   # For a complete reference of configuration options, please see the online documentation at
   # https://docs.vagrantup.com.
 
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://vagrantcloud.com/search.
+  config.vm.box = "generic/debian12"
+
   # Configure for application API
   config.vm.network "forwarded_port", guest: 4300, host: 4300, host_ip: "127.0.0.1"
 
@@ -20,6 +24,9 @@ Vagrant.configure("2") do |config|
   # Configure for database
   config.vm.network "forwarded_port", guest: 5432, host: 5432, host_ip: "127.0.0.1"
 
+  # Mount repo project root folder. 
+  config.vm.synced_folder ".", "/home/vagrant/vmrepo"
+ 
   # Disable the default share of the current code directory. Doing this
   # provides improved isolation between the vagrant box and your host
   # by making sure your Vagrantfile isn't accessable to the vagrant box.
@@ -30,23 +37,9 @@ Vagrant.configure("2") do |config|
   # Use VBoxManage to customize the VM.
   # Enable creation of symbolic links on dir /home/vagrant/vmrepo
   config.vm.provider "virtualbox" do |vb|
-    # Every Vagrant development environment requires a box. You can search for
-    # boxes at https://vagrantcloud.com/search.
-    config.vm.box = "generic/ubuntu2210"
-
     vb.memory = 4096  # Set RAM in MB (4GB in this example)
     vb.cpus = 2      # Set the number of CPU cores
     vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate//home/vagrant/vmrepo", "1"]
-
-    # Mount repo project root folder. 
-    config.vm.synced_folder ".", "/home/vagrant/vmrepo"
-    #, type: "virtualbox"
-  end
-
-  # Use Docker provider for the VM (https://www.vagrantup.com/docs/docker/basics)
-  config.vm.provider "docker" do |v,override|
-    override.vm.box="tknerr/baseimage-ubuntu-22.04"
-    config.vm.box_version = "1.0.0"
   end
 
 # Echo current start time stamp
