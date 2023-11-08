@@ -42,11 +42,6 @@ Vagrant.configure("2") do |config|
     vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate//home/vagrant/vmrepo", "1"]
   end
 
-  # Use Docker provider
-  config.vm.provider "docker" do |d|
-    d.image = "generic/debian12"
-  end
-
 # Echo current start time stamp
   config.vm.provision "shell", name: "starttimestamp", inline: <<-SHELL
     echo " "  
