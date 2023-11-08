@@ -11,10 +11,6 @@ Vagrant.configure("2") do |config|
   # For a complete reference of configuration options, please see the online documentation at
   # https://docs.vagrantup.com.
 
-  # Every Vagrant development environment requires a box. You can search for
-  # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "generic/debian12"
-
   # Configure for application API
   config.vm.network "forwarded_port", guest: 4300, host: 4300, host_ip: "127.0.0.1"
 
@@ -37,6 +33,9 @@ Vagrant.configure("2") do |config|
   # Use VBoxManage to customize the VM.
   # Enable creation of symbolic links on dir /home/vagrant/vmrepo
   config.vm.provider "virtualbox" do |vb|
+    # Every Vagrant development environment requires a box. You can search for
+    # boxes at https://vagrantcloud.com/search.
+    config.vm.box = "generic/debian12"
     vb.memory = 4096  # Set RAM in MB (4GB in this example)
     vb.cpus = 2      # Set the number of CPU cores
     vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate//home/vagrant/vmrepo", "1"]
@@ -49,21 +48,21 @@ Vagrant.configure("2") do |config|
     echo " "
   SHELL
 
-  # Install Ubuntu packages missing in docker image
-  config.vm.provision "shell", name: "docker", inline: <<-SHELL
-    echo " "
-    echo "Installing Ubuntu packages missing in docker image..."  
-    echo "Provisioning with root access"  
-    sudo apt-get -y update
-    echo "installing vim"
-    sudo apt-get install vim
-    # Install iproute2 to get the default gateway IP address
-    sudo apt-get update
-    echo "Installing iproute2"
-    sudo apt-get -y install iproute2
+  # Install packages missing in docker image
+  # config.vm.provision "shell", name: "docker", inline: <<-SHELL
+  #   echo " "
+  #   echo "Installing Ubuntu packages missing in docker image..."  
+  #   echo "Provisioning with root access"  
+  #   sudo apt-get -y update
+  #   echo "installing vim"
+  #   sudo apt-get install vim
+  #   # Install iproute2 to get the default gateway IP address
+  #   sudo apt-get update
+  #   echo "Installing iproute2"
+  #   sudo apt-get -y install iproute2
 
-    echo "End of: Installing Ubuntu packages missing in docker image"
-  SHELL
+  #   echo "End of: Installing packages missing in docker image"
+  # SHELL
   
   # Install Node.js 18
   config.vm.provision "shell", name: "nodejs", inline: <<-SHELL
