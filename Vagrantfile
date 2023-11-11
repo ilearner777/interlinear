@@ -2,7 +2,6 @@
 # vi: set ft=ruby :
 
 # NOTES:
-# This version was tested using Windows 11 Home Edition
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
