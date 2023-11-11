@@ -5,20 +5,22 @@ require 'optparse'
 
 # Get provider from command line
 def get_provider
-  ret = nil
+  provider = nil
   opt_parser = OptionParser.new do |opts|
-    opts.on('--color', 'Use color') do
-      options[:color] = true
-    end
-    opts.on("--provider provider") do |provider|
-      ret = provider
+    opts.on("--provider PROVIDER") do |arg|
+      if arg == 'docker'
+        provider = 'docker'
+      elsif arg != 'virtualbox'
+        puts "Error: Provider #{arg} is not supported. Please use 'docker' or 'virtualbox'."
+        exit 1
+      end
     end
   end
   opt_parser.parse!(ARGV)
-  ret
+  provider || 'virtualbox'  # Default to 'virtualbox' if no provider is set
 end
-provider = get_provider || "virtualbox"
 
+provider = get_provider
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
@@ -113,6 +115,13 @@ Vagrant.configure("2") do |config|
     sudo apt update
     sudo apt install nodejs -y
     echo "End of: Installing Node.js 18"
+  SHELL
+
+  # This may be required for Postgres 14 installation depending on your setup
+  config.vm.provision "shell", name: "timezone", inline: <<-SHELL
+    export DEBIAN_FRONTEND=noninteractive
+    export TZ="America/New_York"  # Set your desired timezone here
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
   SHELL
 
   # Install Postgres 14
