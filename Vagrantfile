@@ -18,6 +18,7 @@ def get_provider
   provider
 end
 
+# Store provider in variable for later use below  
 provider = get_provider
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
