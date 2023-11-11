@@ -5,19 +5,17 @@ require 'optparse'
 
 # Get provider from command line
 def get_provider
-  provider = nil
-  opt_parser = OptionParser.new do |opts|
-    opts.on("--provider PROVIDER") do |arg|
-      if arg == 'docker'
-        provider = 'docker'
-      elsif arg != 'virtualbox'
-        puts "Error: Provider #{arg} is not supported. Please use 'docker' or 'virtualbox'."
-        exit 1
-      end
+  provider_index = ARGV.index { |arg| arg == '--provider' }
+  if provider_index
+    provider = ARGV[provider_index + 1]
+    unless ['docker', 'virtualbox'].include?(provider)
+      puts "Error: Provider #{provider} is not supported. Please use 'docker' or 'virtualbox'."
+      exit 1
     end
+  else
+    provider = 'virtualbox'  # Default to 'virtualbox' if no provider is set
   end
-  opt_parser.parse!(ARGV)
-  provider || 'virtualbox'  # Default to 'virtualbox' if no provider is set
+  provider
 end
 
 provider = get_provider
