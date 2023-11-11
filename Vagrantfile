@@ -7,6 +7,9 @@ require 'optparse'
 def get_provider
   ret = nil
   opt_parser = OptionParser.new do |opts|
+    opts.on('--color', 'Use color') do
+      options[:color] = true
+    end
     opts.on("--provider provider") do |provider|
       ret = provider
     end
