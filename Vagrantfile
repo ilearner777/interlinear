@@ -99,10 +99,10 @@ Vagrant.configure("2") do |config|
     echo "Provisioning with root access"
 
     # Update resynchronizes the package index files from their sources. 
-    sudo apt update
+    sudo apt-get update
 
     # 1. Download and import the Nodesource GPG key
-    sudo apt install -y ca-certificates curl gnupg
+    sudo apt-get install -y ca-certificates curl gnupg
     sudo mkdir -p /etc/apt/keyrings
     curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
 
@@ -111,8 +111,8 @@ Vagrant.configure("2") do |config|
     echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
 
     # 3. Run Update and Install
-    sudo apt update
-    sudo apt install nodejs -y
+    sudo apt-get update
+    sudo apt-get install nodejs -y
     echo "End of: Installing Node.js 18"
   SHELL
 
@@ -138,11 +138,11 @@ Vagrant.configure("2") do |config|
     wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 
     # 3. Update the package lists
-    sudo apt update
+    sudo apt-get update
 
     # 4. Install the latest version of PostgreSQL.
     # If you want a specific version, use 'postgresql-14' or similar instead of 'postgresql':
-    sudo apt -y install postgresql-14
+    sudo apt-get -y install postgresql-14
 
     # Allow postgres user to access /home/vagrant
     # This prevents error: "could not change directory to "/home/vagrant": Permission denied"
@@ -155,11 +155,11 @@ Vagrant.configure("2") do |config|
     service postgresql start
 
     # 6. Create a PostgreSQL user with CREATEDB and CREATEROLE privileges
-    echo "sudo -u postgres psql -c \"CREATE USER vagrant WITH PASSWORD 'vagrant' CREATEDB CREATEROLE;\""
+    echo "running: CREATE USER vagrant WITH PASSWORD 'vagrant' CREATEDB CREATEROLE;"
     sudo -u postgres psql -c "CREATE USER vagrant WITH PASSWORD 'vagrant' CREATEDB CREATEROLE;"
 
     # 7. Create a new database owned by the 'vagrant' user
-    echo "sudo -u postgres psql -c \"CREATE DATABASE gloss_translation OWNER vagrant;\""
+    echo "running: CREATE DATABASE gloss_translation OWNER vagrant;"
     sudo -u postgres psql -c "CREATE DATABASE gloss_translation OWNER vagrant;"
 
     # 8. Restart PostgreSQL to apply changes (may be necessary depending on your setup)    
