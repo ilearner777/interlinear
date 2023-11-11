@@ -144,15 +144,25 @@ Vagrant.configure("2") do |config|
     # If you want a specific version, use 'postgresql-14' or similar instead of 'postgresql':
     sudo apt -y install postgresql-14
 
-    # 5. Create a PostgreSQL user with CREATEDB and CREATEROLE privileges
+    # Allow postgres user to access /home/vagrant
+    # This prevents error: "could not change directory to "/home/vagrant": Permission denied"
+    echo "sudo chmod a+rx /home/vagrant"
+    chmod a+rx /home/vagrant
+
+    # 5. Start PostgreSQL
+    # This is necessary for docker
+    echo "Starting postgresql"
+    service postgresql start
+
+    # 6. Create a PostgreSQL user with CREATEDB and CREATEROLE privileges
     echo "sudo -u postgres psql -c \"CREATE USER vagrant WITH PASSWORD 'vagrant' CREATEDB CREATEROLE;\""
     sudo -u postgres psql -c "CREATE USER vagrant WITH PASSWORD 'vagrant' CREATEDB CREATEROLE;"
 
-    # 6. Create a new database owned by the 'vagrant' user
+    # 7. Create a new database owned by the 'vagrant' user
     echo "sudo -u postgres psql -c \"CREATE DATABASE gloss_translation OWNER vagrant;\""
     sudo -u postgres psql -c "CREATE DATABASE gloss_translation OWNER vagrant;"
 
-    # 7. Restart PostgreSQL to apply changes (may be necessary depending on your setup)    
+    # 8. Restart PostgreSQL to apply changes (may be necessary depending on your setup)    
     sudo service postgresql restart
 
     echo "End of: Installing Postgres 14"
