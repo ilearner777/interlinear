@@ -1,8 +1,22 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# NOTES:
-# This version was tested using Windows 11 Home Edition
+require 'optparse'
+
+# Get provider from command line
+def get_provider
+  ret = nil
+  opt_parser = OptionParser.new do |opts|
+    opts.on("--provider provider") do |provider|
+      ret = provider
+    end
+  end
+  opt_parser.parse!(ARGV)
+  ret
+end
+provider = get_provider || "virtualbox"
+
+
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
@@ -13,7 +27,22 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "generic/ubuntu2210"
+ 
+  # Use VBoxManage to customize the VM.
+  # Enable creation of symbolic links on dir /home/vagrant/vmrepo
+  if provider == "virtualbox"
+    config.vm.provider "virtualbox" do |vb|
+      config.vm.box = "generic/ubuntu2210"
+      vb.memory = 4096  # Set RAM in MB (4GB in this example)
+      vb.cpus = 2      # Set the number of CPU cores
+      vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate//home/vagrant/vmrepo", "1"]
+    end
+  end
+
+  if provider == "docker"
+    config.vm.box="tknerr/baseimage-ubuntu-22.04"
+    config.vm.box_version = "1.0.0"
+  end
 
   # Configure for application API
   config.vm.network "forwarded_port", guest: 4300, host: 4300, host_ip: "127.0.0.1"
@@ -34,14 +63,6 @@ Vagrant.configure("2") do |config|
   # shown above.
   config.vm.synced_folder ".", "/vagrant", disabled: true
 
-  # Use VBoxManage to customize the VM.
-  # Enable creation of symbolic links on dir /home/vagrant/vmrepo
-  config.vm.provider "virtualbox" do |vb|
-    vb.memory = 4096  # Set RAM in MB (4GB in this example)
-    vb.cpus = 2      # Set the number of CPU cores
-    vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate//home/vagrant/vmrepo", "1"]
-  end
-
   # Echo current start time stamp
   config.vm.provision "shell", name: "starttimestamp", inline: <<-SHELL
     echo " "  
@@ -49,6 +70,24 @@ Vagrant.configure("2") do |config|
     echo " "
   SHELL
 
+  # Install packages missing in docker image
+  if provider == "docker"
+    config.vm.provision "shell", name: "docker", inline: <<-SHELL
+      echo " "
+      echo "Installing Ubuntu packages missing in docker image..."  
+      echo "Provisioning with root access"  
+      sudo apt-get -y update
+      echo "installing vim"
+      sudo apt-get install vim
+      # Install iproute2 to get the default gateway IP address
+      sudo apt-get update
+      echo "Installing iproute2"
+      sudo apt-get -y install iproute2
+
+      echo "End of: Installing packages missing in docker image"
+    SHELL
+  end
+ 
   # Install Node.js 18
   config.vm.provision "shell", name: "nodejs", inline: <<-SHELL
     echo " " 
