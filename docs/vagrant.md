@@ -80,7 +80,7 @@ Accessing VM resources from Host.
 1. Start pgAdmin
 1. Open the `Register - Server` dialog
 1. `General` tab:
-   - Name: _Enter name of your choice_
+   - Name: *Enter name of your choice*
 1. `Connection` tab
 
    | Setting              | Value       |
